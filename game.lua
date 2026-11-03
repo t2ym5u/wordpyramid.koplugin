@@ -20,6 +20,8 @@
 -- The round-2 setting keeps pingpong, clock, or both (as in 2002: both,
 -- ping-pong first, against the clock before the proper names).
 
+local SeenHistory = require("seen_history")
+
 local Game = {}
 Game.__index = Game
 
@@ -79,13 +81,14 @@ function Game.stagesFor(round2)
 end
 
 -- opts: players (4 names), content (function(kind) -> list, kinds riddles,
--- names, clock, pyramid, words), recent (set of keys to avoid), rng,
+-- names, clock, pyramid, words), seen (a SeenHistory of Game.keyOf ids,
+-- remembering earlier games; in-memory when nil), rng,
 -- round2 ("both" | "pingpong" | "clock"), name_bricks (3..5), unit.
 function Game.new(opts)
     local self = setmetatable({}, Game)
     self.rng = opts.rng or math.random
     self.content = opts.content or function() return {} end
-    self.recent = opts.recent or {}
+    self.seen = opts.seen or SeenHistory.open(nil, "content")
     self.round2 = opts.round2 or "both"
     self.name_bricks = opts.name_bricks or 4
     self.players = {}
@@ -157,27 +160,35 @@ local function keyOf(kind, item)
 end
 Game.keyOf = keyOf
 
--- n distinct items of a kind, never twice in a game; items seen in recent
--- games only once the fresh ones run out.
+-- n distinct items of a kind, never twice in a game; items dealt in earlier
+-- games (self.seen) only once every item of that kind has been dealt.
 function Game:draw(kind, n, list)
-    local fresh, stale = {}, {}
+    local pool = {}
     for _, it in ipairs(list or self.content(kind) or {}) do
         local k = keyOf(kind, it)
-        if not self.used[k] then
-            if self.recent[k] then stale[#stale + 1] = it else fresh[#fresh + 1] = it end
-        end
+        if not self.used[k] then pool[#pool + 1] = { id = k, it = it } end
     end
-    shuffle(fresh, self.rng)
-    shuffle(stale, self.rng)
     local out = {}
-    for _, l in ipairs({ fresh, stale }) do
-        for _, it in ipairs(l) do
-            if #out >= n then break end
-            out[#out + 1] = it
-        end
-    end
+    for i, w in ipairs(self.seen:draw(pool, n, self.rng)) do out[i] = w.it end
     for _, it in ipairs(out) do self:markUsed(kind, it) end
     return out
+end
+
+-- The 1.0.x "recent" list (Game.keyOf ids, newest first, languages mixed)
+-- into the per-language histories: contents = { fr = fn(kind), en = ... },
+-- seenFor(lang) -> SeenHistory. Marked oldest first.
+function Game.migrateRecent(list, contents, kinds, seenFor)
+    for lang, content in pairs(contents) do
+        local known = {}
+        for _, kind in ipairs(kinds) do
+            for _, it in ipairs(content(kind) or {}) do known[keyOf(kind, it)] = true end
+        end
+        local items = {}
+        for i = #list, 1, -1 do
+            if known[list[i]] then items[#items + 1] = list[i] end
+        end
+        if #items > 0 then seenFor(lang):mark(items) end
+    end
 end
 
 function Game:markUsed(kind, it)

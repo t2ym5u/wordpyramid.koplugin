@@ -66,7 +66,8 @@ final pyramid of expressions).
 - Player names typed once (one per line) and remembered.
 - Content written natively in French and English; the content language is its
   own setting (**Language: FR/EN**, defaulting to KOReader's language), the
-  interface follows KOReader. Content seen in recent games is avoided.
+  interface follows KOReader. Content already played (in any game) only
+  comes back once every item of its kind has been played.
 
   | Content | EN | FR |
   |---|---|---|

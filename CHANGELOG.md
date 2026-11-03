@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0] - 2026-11-03
+
+### Changed
+- Riddles, names, themes, words and pyramids are remembered across games
+  until every item of their kind has been played (the whole content, instead
+  of the last 600 items), and as soon as they are dealt rather than at the
+  end of a game. What was already remembered is carried over.
+
 ## [1.0.2] - 2026-11-02
 
 ### Changed

@@ -28,12 +28,14 @@ local T               = require("ffi/util").template
 
 local MenuHelper = require("menu_helper")
 local ScreenBase = require("screen_base")
+local SeenHistory = require("seen_history")
 local Game       = lrequire("game")
 local W          = lrequire("widgets")
 
 local DeviceScreen = Device.screen
 
-local MAX_RECENT = 600
+-- Items remembered across games, per language (all kinds: ~1500).
+local SEEN_MAX = 2000
 local KINDS = { "riddles", "names", "clock", "pyramid", "words" }
 
 local GAME_RULES_EN = [[
@@ -145,12 +147,11 @@ function PyramidScreen:init()
     local plugin = self.plugin
     self.lang = plugin:getSetting("lang", defaultLang())
     self.unit = plugin:getSetting("unit", "euros")
-    local recent = {}
-    for _i, k in ipairs(plugin:getSetting("recent", {})) do recent[k] = true end
+    self:_migrateRecent()
     self.game = Game.new{
         players = self:_savedPlayers(),
         content = contentLoader(self.lang),
-        recent = recent,
+        seen = self:_seen(self.lang),
         round2 = plugin:getSetting("round2", "both"),
         name_bricks = plugin:getSetting("name_bricks", 4),
     }
@@ -268,17 +269,24 @@ end
 -- Actions
 -- ---------------------------------------------------------------------------
 
-function PyramidScreen:_rememberContent()
-    local list = {}
-    for i = #self.game.used_list, 1, -1 do list[#list + 1] = self.game.used_list[i] end
-    for _i, k in ipairs(self.plugin:getSetting("recent", {})) do
-        if #list >= MAX_RECENT then break end
-        if not self.game.used[k] then list[#list + 1] = k end
+-- What was dealt (riddles, names, themes, words, pyramids), remembered in
+-- the settings ("seen_content_<lang>") as it is dealt: an item comes back
+-- only once every item of its kind has been played.
+function PyramidScreen:_seen(lang)
+    return SeenHistory.open(self.plugin, "content_" .. lang, { max = SEEN_MAX })
+end
+
+-- Up to 1.0.x the last 600 items of finished games were kept under
+-- "recent" (newest first, both languages mixed): move them into each
+-- language's history once, then drop the old setting.
+function PyramidScreen:_migrateRecent()
+    local old = self.plugin:getSetting("recent", nil)
+    if old == nil then return end
+    if type(old) == "table" then
+        Game.migrateRecent(old, { fr = contentLoader("fr"), en = contentLoader("en") }, KINDS,
+            function(lang) return self:_seen(lang) end)
     end
-    self.plugin:saveSetting("recent", list)
-    local set = {}
-    for _i, k in ipairs(list) do set[k] = true end
-    self.game.recent = set
+    self.plugin:saveSetting("recent", nil)
 end
 
 function PyramidScreen:_hasContent()
@@ -399,7 +407,6 @@ function PyramidScreen:onFinalUndo() self:_finalAction("finalUndo") end
 
 function PyramidScreen:onNewGame()
     self:_stopCountdown()
-    self:_rememberContent()
     self:_applySettings()
     self.game:newGame()
     self:_save()
@@ -443,6 +450,7 @@ function PyramidScreen:openLangMenu()
             self.lang = lang
             self.plugin:saveSetting("lang", lang)
             self.game.content = contentLoader(lang)
+            self.game.seen = self:_seen(lang)
         end)
 end
 
