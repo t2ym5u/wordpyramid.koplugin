@@ -1,5 +1,5 @@
 local DIR = debug.getinfo(1, "S").source:sub(2):match("(.*[/\\])") or "./"
-package.path = DIR .. "?.lua;" .. package.path
+package.path = DIR .. "?.lua;" .. DIR .. "common/?.lua;" .. package.path
 
 local Game = dofile(DIR .. "game.lua")
 
@@ -26,10 +26,23 @@ local function fakeContent()
     return function(kind) return c[kind] end
 end
 
+local SeenHistory = require("seen_history")
+
 local function newGame(opts)
     opts = opts or {}
-    return Game.new{ players = { "Alice", "Bob", "Carol", "Dave" }, content = fakeContent(),
-                     rng = lcg(opts.seed or 1), round2 = opts.round2, name_bricks = opts.name_bricks }
+    return Game.new{ players = { "Alice", "Bob", "Carol", "Dave" }, content = opts.content or fakeContent(),
+                     rng = lcg(opts.seed or 1), round2 = opts.round2, name_bricks = opts.name_bricks,
+                     seen = opts.seen }
+end
+
+-- Plugin settings stand-in, kept between "sessions".
+local function fakePlugin()
+    local store = {}
+    return {
+        store = store,
+        getSetting  = function(_self, k, d) if store[k] == nil then return d end return store[k] end,
+        saveSetting = function(_self, k, v) store[k] = v end,
+    }
 end
 
 -- Plays one riddle: `script` is a string of f (found), w (wrong), x (forbidden).
@@ -571,3 +584,39 @@ for _, lang in ipairs({ "fr", "en" }) do
         end)
     end)
 end
+
+describe("wordpyramid history across games", function()
+    it("never deals an item of an earlier session until its kind is used up", function()
+        local p = fakePlugin()
+        local got = {}
+        for session = 1, 4 do
+            local g = newGame{ seed = session, seen = SeenHistory.open(p, "content_fr", { max = 2000 }) }
+            for _, kind in ipairs({ "riddles", "words" }) do
+                for _, it in ipairs(g:draw(kind, 5)) do
+                    local k = Game.keyOf(kind, it)
+                    assert.is_nil(got[k], "session " .. session .. " repeated " .. k)
+                    got[k] = true
+                end
+            end
+        end
+        -- 20 riddles dealt: the 5th session starts a new riddle cycle, words go on
+        local g = newGame{ seed = 5, seen = SeenHistory.open(p, "content_fr", { max = 2000 }) }
+        assert.are.equal(5, #g:draw("riddles", 5))
+        for _, w in ipairs(g:draw("words", 5)) do assert.is_nil(got["words:" .. w]) end
+    end)
+
+    it("migrates the 1.0.x recent list into each language once", function()
+        local p = fakePlugin()
+        local fr = { words = { "girafe", "volcan", "nuage" }, riddles = { { t = "Il a perdu à Waterloo", a = "Napoléon" } } }
+        local en = { words = { "giraffe" } }
+        local contents = { fr = function(k) return fr[k] end, en = function(k) return en[k] end }
+        local old = { "words:giraffe", "riddles:Il a perdu à Waterloo", "words:gone", "words:volcan", "words:girafe" }
+        Game.migrateRecent(old, contents, { "riddles", "words", "names" },
+            function(lang) return SeenHistory.open(p, "content_" .. lang) end)
+        assert.are.same({ "words:girafe", "words:volcan", "riddles:Il a perdu à Waterloo" },
+                        p.store.seen_content_fr)
+        assert.are.same({ "words:giraffe" }, p.store.seen_content_en)
+        local g = newGame{ content = contents.fr, seen = SeenHistory.open(p, "content_fr") }
+        assert.are.same({ "nuage" }, g:draw("words", 1))
+    end)
+end)
