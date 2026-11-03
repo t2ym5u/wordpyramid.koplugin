@@ -148,7 +148,7 @@ return {
 { t = "Le vagabond au chapeau melon", w = { "Charlot", "canne", "muet", "moustache", "Temps modernes" }, a = "Charlie Chaplin" },
 { t = "Sa robe blanche s'envolait", w = { "blonde", "Kennedy", "actrice", "Hollywood", "grain de beauté" }, a = "Marilyn Monroe" },
 { t = "Il grimaçait mieux que personne", w = { "Bourvil", "Corniaud", "Rabbi Jacob", "gendarme", "Fantômas" }, a = "Louis de Funès" },
-{ t = "Le clown en salopette", w = { "Restos du cœur", "humoriste", "nez rouge", "Enfoirés", "Tchao Pantin" }, a = "Coluche" },
+{ t = "Le clown en salopette", w = { "Restos du cœur", "humoriste", "nez rouge", "L'Aile ou la Cuisse", "Tchao Pantin" }, a = "Coluche" },
 { t = "L'as des as", w = { "Bébel", "cascades", "Magnifique", "Professionnel", "Godard" }, a = "Jean-Paul Belmondo" },
 { t = "L'homme à tête de chou", w = { "Birkin", "cigarette", "poinçonneur", "Melody", "piano" }, a = "Serge Gainsbourg" },
 { t = "Ne me quitte pas", w = { "Belgique", "Marquises", "Amsterdam", "chanteur", "Vesoul" }, a = "Jacques Brel" },
