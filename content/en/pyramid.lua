@@ -23,7 +23,7 @@ return {
 { "Birthday party", "Little Red Riding Hood", "All's well that ends well", "Back to the Future", "Keep your chin up", "Achilles' heel" },
 { "Credit crunch", "Fast asleep", "In hot water", "Mary Poppins", "A leopard can't change its spots", "Cross the Rubicon" },
 { "Coffee table", "Rock and roll", "Head over heels", "Robinson Crusoe", "Let sleeping dogs lie", "Open Pandora's box" },
-{ "Shopping list", "Hide and seek", "Cry over spilt milk", "Lord of the Rings", "Not my cup of tea", "Damn with faint praise" },
+{ "Shopping list", "Hide and seek", "Cry over spilt milk", "Lord of the Rings", "Not my cup of tea", "Leave no stone unturned" },
 { "Living room", "Black sheep", "A blessing in disguise", "Twinkle Twinkle Little Star", "Go the extra mile", "Between Scylla and Charybdis" },
 { "Bath towel", "Sweet dreams", "Two heads are better than one", "Frankenstein's monster", "Rome wasn't built in a day", "Cast pearls before swine" },
 { "Post office", "Cat nap", "Up in the air", "Hotel California", "Don't count your chickens", "Tilting at windmills" },

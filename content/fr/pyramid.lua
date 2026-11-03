@@ -23,7 +23,7 @@ return {
 { "Œuf à la coque", "Château fort", "Être fauché", "Le Seigneur des anneaux", "Appeler un chat un chat", "Tourner autour du pot" },
 { "Fête des mères", "Porte-monnaie", "Bouche cousue", "La Guerre des étoiles", "Avoir une faim de loup", "Courir sur le haricot" },
 { "Crème glacée", "Coup de pouce", "Faire la bise", "Les Aventures de Tintin", "Il y a anguille sous roche", "Être collet monté" },
-{ "Gros mot", "Bout du monde", "Être une poule mouillée", "Le Dîner de cons", "Se serrer la ceinture", "Faire des gorges chaudes" },
+{ "Gros mot", "Bout du monde", "Être une poule mouillée", "Intouchables", "Se serrer la ceinture", "Faire des gorges chaudes" },
 { "Bain moussant", "Chef-d'œuvre", "Tomber des nues", "Bienvenue chez les Ch'tis", "Avoir un cœur d'artichaut", "Être né coiffé" },
 { "Lunettes de soleil", "Mot de passe", "Jeter l'éponge", "La Grande Vadrouille", "Avoir le vent en poupe", "Mener quelqu'un en bateau" },
 { "Sapin de Noël", "Gardien de but", "Faire du lèche-vitrine", "Le Corniaud", "Couper l'herbe sous le pied", "Avoir la langue bien pendue" },

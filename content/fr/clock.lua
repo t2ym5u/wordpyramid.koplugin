@@ -118,7 +118,7 @@ return {
 { t = "Les bébés", w = { "biberon", "couche", "tétine", "berceau", "landau", "hochet", "bavoir", "doudou" } },
 { t = "Le téléphone", w = { "sonnerie", "écran", "appel", "message", "chargeur", "batterie", "répondeur", "numéro" } },
 { t = "Internet", w = { "site", "courriel", "réseau", "wifi", "mot de passe", "vidéo", "clic", "écran" } },
-{ t = "Les gros mots gentils", w = { "zut", "flûte", "mince", "crotte", "saperlipopette", "sapristi", "nom d'un chien", "fichtre" } },
+{ t = "Les gros mots gentils", w = { "zut", "flûte", "mince", "punaise", "saperlipopette", "sapristi", "nom d'un chien", "fichtre" } },
 { t = "Ce qui fait peur", w = { "araignée", "noir", "serpent", "orage", "dentiste", "vide", "fantôme", "souris" } },
 { t = "Les fast-foods", w = { "hamburger", "frites", "pizza", "kebab", "hot-dog", "nuggets", "soda", "ketchup" } },
 { t = "Le chocolat", w = { "cacao", "tablette", "noir", "lait", "praline", "truffe", "Pâques", "fondant" } },

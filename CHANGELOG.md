@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.2] - 2026-11-02
+
+### Changed
+- Family-friendly content: replaced « crotte », « Le Dîner de cons »,
+  « Enfoirés » (French) and "Damn with faint praise" (English).
+
 ## [1.0.1] - 2026-11-02
 
 ### Changed
