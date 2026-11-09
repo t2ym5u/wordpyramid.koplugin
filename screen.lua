@@ -104,10 +104,6 @@ INDICES INTERDITS
 Le réglage de la manche 2 joue à la fois le ping-pong et le contre-la-montre (comme dans les saisons 2002), ou un seul des deux. Le jeu par téléphone des téléspectateurs de l'émission n'a pas d'équivalent autour d'une table et n'est pas repris.
 ]]
 
-local function defaultLang()
-    return _.lang() == "fr" and "fr" or "en"
-end
-
 -- One file per language and kind, each loaded only when first needed.
 local function contentLoader(lang)
     local cache = {}
@@ -145,7 +141,7 @@ local PyramidScreen = ScreenBase:extend{}
 
 function PyramidScreen:init()
     local plugin = self.plugin
-    self.lang = plugin:getSetting("lang", defaultLang())
+    self.lang = plugin:getLang({ "fr", "en" })
     self.unit = plugin:getSetting("unit", "euros")
     self:_migrateRecent()
     self.game = Game.new{
@@ -448,7 +444,7 @@ function PyramidScreen:openLangMenu()
         { { id = "fr", text = "Français" }, { id = "en", text = "English" } }, self.lang,
         function(lang)
             self.lang = lang
-            self.plugin:saveSetting("lang", lang)
+            self.plugin:setLang(lang)
             self.game.content = contentLoader(lang)
             self.game.seen = self:_seen(lang)
         end)
@@ -513,8 +509,8 @@ end
 -- Renames in place (scores kept); missing lines keep the old name.
 function PyramidScreen:applyPlayerNames(text)
     local names = {}
-    for line in (text .. "\n"):gmatch("(.-)\n") do
-        line = line:gsub("^%s+", ""):gsub("%s+$", "")
+    for raw in (text .. "\n"):gmatch("(.-)\n") do
+        local line = raw:gsub("^%s+", ""):gsub("%s+$", "")
         if line ~= "" then names[#names + 1] = line end
     end
     for i = 1, 4 do
