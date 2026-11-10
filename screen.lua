@@ -34,8 +34,8 @@ local W          = lrequire("widgets")
 
 local DeviceScreen = Device.screen
 
--- Items remembered across games, per language (all kinds: ~1500).
-local SEEN_MAX = 2000
+-- Items remembered across games, per language (all kinds: ~3100 in French).
+local SEEN_MAX = 4000
 local KINDS = { "riddles", "names", "clock", "pyramid", "words" }
 
 local GAME_RULES_EN = [[

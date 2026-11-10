@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0] - 2026-11-10
+
+### Added
+- Twice as much French content: 433 riddles (was 214), 260 against-the-clock
+  themes (126), 234 proper-name themes (116), 345 Great-Pyramid sets (172)
+  and 1,820 ping-pong words (891). The game remembers the last 4,000 items
+  it dealt (was 2,000), so it goes through all of them before repeating.
+
 ## [1.1.3] - 2026-11-09
 
 ### Fixed
