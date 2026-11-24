@@ -223,13 +223,15 @@ end
 
 function PyramidScreen:_startCountdown(seconds)
     self.time_left = seconds
+    self:cancelScheduled()
     self._tick_gen = (self._tick_gen or 0) + 1
     local gen = self._tick_gen
-    UIManager:scheduleIn(1, function() self:_onTick(gen) end)
+    self:schedule(1, function() self:_onTick(gen) end)
 end
 
 function PyramidScreen:_stopCountdown()
     self._tick_gen = (self._tick_gen or 0) + 1
+    self:cancelScheduled()
 end
 
 function PyramidScreen:_timerText()
@@ -258,7 +260,7 @@ function PyramidScreen:_onTick(gen)
         return
     end
     self:_refreshTimer()
-    UIManager:scheduleIn(1, function() self:_onTick(gen) end)
+    self:schedule(1, function() self:_onTick(gen) end)
 end
 
 -- ---------------------------------------------------------------------------
